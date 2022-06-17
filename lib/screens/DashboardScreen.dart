@@ -1,11 +1,32 @@
 import 'package:bus_test/Components/colors.dart';
 import 'package:bus_test/Components/constants.dart';
 import 'package:bus_test/screens/DriverList.dart';
+import 'package:bus_test/screens/LoginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+class DashboardScreen extends StatefulWidget {
+  DashboardScreen({Key? key}) : super(key: key);
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getcred();
+  }
+
+  late String token;
+  Future<void> getcred() async {
+    SharedPreferences prefer = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefer.getString('access')!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +47,33 @@ class DashboardScreen extends StatelessWidget {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Do You want to Logout?'),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              logout();
+                            },
+                            child: Text('yes')),
+                        TextButton(
+                            onPressed: () {
+                              return Navigator.pop(context);
+                            },
+                            child: Text('No')),
+                      ],
+                    );
+                  });
+            },
+            icon: const Icon(Icons.logout_rounded),
+            color: Colors.yellow,
+          ),
+        ],
         backgroundColor: colorSecondary,
       ),
       body: Padding(
@@ -79,5 +127,13 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void logout() async {
+    SharedPreferences prefer = await SharedPreferences.getInstance();
+    await prefer.clear();
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+        (route) => false);
   }
 }
