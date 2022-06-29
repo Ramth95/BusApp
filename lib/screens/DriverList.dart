@@ -49,7 +49,9 @@ class _DriverListState extends State<DriverList> {
                 itemCount: driver_list.length,
                 itemBuilder: (context, index) {
                   return CardList(
-                      title: driver_list[index].name,
+                      title: driver_list[index].name == null
+                          ? 'no name'
+                          : driver_list[index].name,
                       subtitle: 'Lic:no: ${driver_list[index].licenseNo}',
                       image: 'assets/driver.png');
                 },

@@ -81,7 +81,7 @@ class DioClient {
     // Dio dio=Dio();
     _dio.options.headers["Authorization"] = "Bearer $accesstoken";
     var response = await _dio.post(
-      BASE_URL + "AssignDriverApi/$urlId",
+      "http://flutter.noviindus.co.in/api/AssignDriverApi/$urlId/",
       //options: Options(headers: {"Bearer Token":accesstoken})
       data: json.encode({"driver_id": driver_id, "bus_id": bus_id}),
     );
@@ -106,7 +106,7 @@ class DioClient {
     // Dio dio=Dio();
     _dio.options.headers["Authorization"] = "Bearer $accesstoken";
     var response = await _dio.get(
-      BASE_URL + "DriverApi/$urlId",
+      "http://flutter.noviindus.co.in/api/DriverApi/$urlId/",
       //options: Options(headers: {"Bearer Token":accesstoken})
       //data: json.encode({"driver_id": driver_id, "bus_id": bus_id}),
     );
