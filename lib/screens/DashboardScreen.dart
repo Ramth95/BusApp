@@ -127,8 +127,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   return CardList(
                     title: busList[index].name,
                     subtitle: busList[index].type,
-                    image: 'http://flutter.noviindus.co.in/api' +
-                        busList[index].image,
+                    image:
+                        'http://flutter.noviindus.co.in' + busList[index].image,
                   );
                 },
               ),
