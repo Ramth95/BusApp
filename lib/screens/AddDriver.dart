@@ -2,9 +2,14 @@ import 'package:bus_test/Components/colors.dart';
 import 'package:bus_test/Components/constants.dart';
 import 'package:flutter/material.dart';
 
-class AddDriver extends StatelessWidget {
+class AddDriver extends StatefulWidget {
   const AddDriver({Key? key}) : super(key: key);
 
+  @override
+  State<AddDriver> createState() => _AddDriverState();
+}
+
+class _AddDriverState extends State<AddDriver> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;

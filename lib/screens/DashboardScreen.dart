@@ -1,7 +1,10 @@
 import 'package:bus_test/Components/colors.dart';
 import 'package:bus_test/Components/constants.dart';
+import 'package:bus_test/Components/urls.dart';
+import 'package:bus_test/Models/busListModel.dart';
 import 'package:bus_test/screens/DriverList.dart';
 import 'package:bus_test/screens/LoginScreen.dart';
+import 'package:bus_test/services/api.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,10 +17,17 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final dioService = DioClient();
+  List<BusList> busList = [];
+
   @override
   void initState() {
     super.initState();
-    getcred();
+    getBuslist();
+  }
+
+  getBuslist() async {
+    busList = await dioService.list_bus();
   }
 
   late String token;
@@ -54,18 +64,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('Do You want to Logout?'),
+                      title: const Text('Do You want to Logout?'),
                       actions: [
                         TextButton(
                             onPressed: () {
                               logout();
                             },
-                            child: Text('yes')),
+                            child: const Text('yes')),
                         TextButton(
                             onPressed: () {
                               return Navigator.pop(context);
                             },
-                            child: Text('No')),
+                            child: const Text('No')),
                       ],
                     );
                   });
@@ -105,21 +115,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ],
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(20.0),
-              child: Text('Buses Found'),
+              child: Text('${busList.length} Bus Found'),
             ),
             Expanded(
-              child: ListView.separated(
-                itemCount: 10,
+              child: ListView.builder(
+                itemCount: busList.length,
                 itemBuilder: (context, index) {
+                  print('${busList[index].name}');
                   return CardList(
-                      title: 'KSRTC',
-                      subtitle: 'Swift Scania p series',
-                      image: 'assets/bus.png');
-                },
-                separatorBuilder: (context, index) {
-                  return Newheight(newheight: 10);
+                    title: busList[index].name,
+                    subtitle: busList[index].type,
+                    image: 'http://flutter.noviindus.co.in/api' +
+                        busList[index].image,
+                  );
                 },
               ),
             )

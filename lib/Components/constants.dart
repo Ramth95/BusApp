@@ -1,3 +1,4 @@
+import 'package:bus_test/Components/busseats.dart';
 import 'package:bus_test/Components/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -102,12 +103,16 @@ class CardList extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
         child: ListTile(
-          leading: Image(image: AssetImage(image)),
+          leading: SizedBox(
+              height: 50, width: 50, child: Image(image: NetworkImage(image))),
           title: Text(title),
           subtitle: Text(subtitle),
           trailing: ElevatedButton(
             style: ElevatedButton.styleFrom(primary: colorPrimary),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => Busseats()));
+            },
             child: const Text('Manage'),
           ),
         ),

@@ -1,15 +1,15 @@
 // ignore_for_file: file_names
 
-import 'dart:convert';
 
 import 'package:bus_test/Components/colors.dart';
 import 'package:bus_test/Components/constants.dart';
 import 'package:bus_test/screens/DashboardScreen.dart';
+import 'package:bus_test/services/api.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -22,6 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
+
+  final dioService = DioClient();
 
   late String id;
 
@@ -101,63 +103,53 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> signin() async {
-    try {
-      if (_passwordController.text.isNotEmpty &&
-          _usernameController.text.isNotEmpty) {
-        var response = await http.post(
-            Uri.parse("http://flutter.noviindus.co.in/api/LoginApi"),
-            body: ({
-              'username': _usernameController.text,
-              'password': _passwordController.text
-            }));
-        print(response.statusCode);
-        if (response.statusCode == 200) {
-          final String body = response.body;
-          print(body);
-          final decodedvalue = jsonDecode(body);
-          final token = decodedvalue['access'];
-          print(token);
-          //id = decodedvalue['urlid'];
-          //print(id);
-          pageRoute(token);
-          print('fn called');
-          Fluttertoast.showToast(
-              msg: decodedvalue["message"],
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-              fontSize: 16.0);
-        } 
-        else
-         {
-          Fluttertoast.showToast(
-              msg: "Invalid credentials",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: colorPrimary,
-              textColor: Colors.white,
-              fontSize: 16.0);
-          print('invalid');
-        }
-      } else {
-        Fluttertoast.showToast(
-            msg: "Fields cannot be blank",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: colorPrimary,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        print('blank');
-      }
-    } catch (exception) {
-      print(exception.toString());
-    }
+  Future signin() async {
+    var username = _usernameController.text;
+    var password = _passwordController.text;
+    var response = await dioService.login(username, password);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => DashboardScreen()));    
   }
+
+  // Future<void> signin() async {
+  //   try {
+  //     if (_passwordController.text.isNotEmpty &&
+  //         _usernameController.text.isNotEmpty) {
+  //       var response = await http.post(
+  //           Uri.parse("http://flutter.noviindus.co.in/api/LoginApi"),
+  //           body: ({
+  //             'username': _usernameController.text,
+  //             'password': _passwordController.text
+  //           }));
+  //       print(response.statusCode);
+  //        final decodedvalue ;
+  //       if (response.statusCode == 200) {
+  //         final String body = response.body;
+  //         print(body);
+  //         decodedvalue = jsonDecode(body);
+  //         final token = decodedvalue['access'];
+  //         print(token);
+  //         //id = decodedvalue['urlid'];
+  //         //print(id);
+  //         pageRoute(token);
+  //         print('fn called');
+
+  //       }
+  //       else if(response.statusCode==401){
+  //         final response2 = await http.post(Uri.parse('http://flutter.noviindus.co.in/api/api/token/refresh/'),
+  //         body: ({
+  //             'refresh':''
+  //           }),
+  //         headers: {'grant_type': 'refresh_token', 'refresh_token': ''});
+  //         var refresh_token = jsonDecode(response2.body)['refresh'];
+  //         print(refresh_token);
+  //         return signin();
+  //       }
+  //     }
+  //   } catch (exception) {
+  //     print(exception.toString());
+  //   }
+  // }
 
   void pageRoute(String token) async {
     SharedPreferences prefer = await SharedPreferences.getInstance();
